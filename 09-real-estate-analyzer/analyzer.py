@@ -65,4 +65,3 @@ class Analyzer:
     def print_most_average_two_bedroom(self):
         if len(self.two_bed_averages):
             print('Average 2-bedroom: ${:,}, {} bed, {} bath'.format(self.two_bed_averages['price'], self.two_bed_averages['beds'], self.two_bed_averages['baths']))
-
