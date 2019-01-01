@@ -2,9 +2,6 @@ import os
 
 
 class Journal:
-    path = ''
-    text = ''
-
     def __init__(self, name):
         self.path = os.path.abspath(os.path.join('journals', name + '.jrn'))
         self.load()

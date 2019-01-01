@@ -2,9 +2,6 @@ from random import randint
 
 
 class Killable:
-    hp = None
-    max_hp = None
-
     def heal(self, amount):
         self.hp = min(self.max_hp, self.hp + amount)
 

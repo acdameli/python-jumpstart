@@ -37,17 +37,15 @@ class Purchase:
 
 
 class Analyzer:
-    path = ''
-    max = 0
-    max_record = None
-    min = maxsize
-    min_record = None
-    averages = defaultdict(int)
-    two_bed_averages = defaultdict(int)
-
     def __init__(self, csv_path):
         self.path = csv_path
         self.load()
+        self.max = 0
+        self.max_record = None
+        self.min = maxsize
+        self.min_record = None
+        self.averages = defaultdict(int)
+        self.two_bed_averages = defaultdict(int)
 
     def load(self):
         # do something more elegant for average calculations
@@ -77,7 +75,7 @@ class Analyzer:
             self.averages['beds'] = round(self.averages['beds'] / count, 1)
             self.averages['baths'] = round(self.averages['baths'] / count, 1)
             if two_bed_count > 0:
-                self.two_bed_averages['price'] = round(self.two_bed_averages['price'] / two_bed_count)
+                self.twbo_ed_averages['price'] = round(self.two_bed_averages['price'] / two_bed_count)
                 self.two_bed_averages['beds'] = round(self.two_bed_averages['beds'] / two_bed_count, 1)
                 self.two_bed_averages['baths'] = round(self.two_bed_averages['baths'] / two_bed_count, 1)
 
