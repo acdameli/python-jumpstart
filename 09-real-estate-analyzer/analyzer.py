@@ -36,9 +36,54 @@ class Purchase:
             float(lookup['longitude']))
 
 
+<<<<<<< HEAD
+=======
+class Averager:
+    def __init__(self):
+        self.current_value = 0
+        self.point_counter = 0
+        self.max = None
+        self.min = None
+
+    def count(self):
+        return self.point_counter
+
+    def sum(self):
+        return self.current_value * self.point_counter
+
+    def __add__(self, other):
+        current_sum = self.current_value * self.point_counter + float(other)
+        self.point_counter += 1
+        self.current_value = current_sum / self.point_counter
+        self.max = self.max if self.max and self.max > other else other
+        self.min = self.min if self.min and self.min < other else other
+        return self
+
+    def __str__(self):
+        return str(self.current_value)
+
+    def __float__(self):
+        return float(self.current_value)
+
+
+>>>>>>> abad0c2981ab58bb7e47a62f0d33ba8f114210c9
 class Analyzer:
     def __init__(self, csv_path):
         self.path = csv_path
+        self.max = 0
+        self.max_record = None
+        self.min = maxsize
+        self.min_record = None
+        self.averages = {
+            'price': Averager(),
+            'beds': Averager(),
+            'baths': Averager(),
+        }
+        self.two_bed_averages = {
+            'price': Averager(),
+            'beds': Averager(),
+            'baths': Averager(),
+        }
         self.load()
         self.max = 0
         self.max_record = None
@@ -51,33 +96,19 @@ class Analyzer:
         # do something more elegant for average calculations
         with open(self.path, 'r', encoding='utf-8') as fin:
             reader = DictReader(fin)
-            two_bed_count = 0
-            count = 0
             for row in reader:
                 p = Purchase.create_from_dict(row)
-                if self.max < p.price:
-                    self.max = max(self.max, p.price)
-                    self.max_record = row
-                if self.min > p.price:
-                    self.min = min(self.min, p.price)
-                    self.min_record = row
                 self.averages['price'] += p.price
                 self.averages['beds'] += p.beds
                 self.averages['baths'] += p.baths
-                count += 1
+                if self.averages['price'].max == p.price:
+                    self.max_record = row
+                if self.averages['price'].min == p.price:
+                    self.min_record = row
                 if p.beds == 2:
                     self.two_bed_averages['price'] += p.price
                     self.two_bed_averages['beds'] += p.beds
                     self.two_bed_averages['baths'] += p.baths
-                    two_bed_count += 1
-
-            self.averages['price'] = round(self.averages['price'] / count)
-            self.averages['beds'] = round(self.averages['beds'] / count, 1)
-            self.averages['baths'] = round(self.averages['baths'] / count, 1)
-            if two_bed_count > 0:
-                self.twbo_ed_averages['price'] = round(self.two_bed_averages['price'] / two_bed_count)
-                self.two_bed_averages['beds'] = round(self.two_bed_averages['beds'] / two_bed_count, 1)
-                self.two_bed_averages['baths'] = round(self.two_bed_averages['baths'] / two_bed_count, 1)
 
     def print_headers(self):
         print('Header: ' + ', '.join(self.max_record.keys()))
@@ -89,8 +120,8 @@ class Analyzer:
         print('Least expensive: {}-beds, {}-baths, {} for ${:,} in {}'.format(self.min_record['beds'], self.min_record['baths'], self.min_record['type'], int(self.min_record['price']), self.min_record['city']))
 
     def print_most_average(self):
-        print('Average: ${:,}, {} bed, {} bath'.format(self.averages['price'], self.averages['beds'], self.averages['baths']))
+        print('Average: ${:,.2f}, {:,.1f} bed, {:,.1f} bath'.format(float(self.averages['price']), float(self.averages['beds']), float(self.averages['baths'])))
 
     def print_most_average_two_bedroom(self):
         if len(self.two_bed_averages):
-            print('Average 2-bedroom: ${:,}, {} bed, {} bath'.format(self.two_bed_averages['price'], self.two_bed_averages['beds'], self.two_bed_averages['baths']))
+            print('Average 2-bedroom: ${:,.2f}, {:,.1f} bed, {:.1f} bath'.format(round(float(self.two_bed_averages['price']), 2), float(self.two_bed_averages['beds']), float(self.two_bed_averages['baths'])))
